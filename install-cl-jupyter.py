@@ -191,7 +191,7 @@ if config.lisp_implementation == "sbcl":
 
     config.sbcl_version = map(int, version)
 
-    sbcl_min_version = (1, 2, 0)
+    sbcl_min_version = (2, 1, 9)
     for have, need in zip(config.sbcl_version, sbcl_min_version):
         if have < need:
             message = "found {}; required: sbcl >= {}"
@@ -200,16 +200,16 @@ if config.lisp_implementation == "sbcl":
 
     print("... Kernel: using {}".format(sbcl_version_string))
 
-elif config.lisp_implementation == "ccl":
+elif config.lisp_implementation == "ccl64":
     if not config.lisp_executable:
-        config.lisp_executable = 'ccl'
+        config.lisp_executable = 'ccl64'
 
     try:
         ccl_version_string = subprocess.check_output([config.lisp_executable, "-V"]).decode()
     except FileNotFoundError:
         halt("Error: Lisp executable '{0}' not in PATH".format (config.lisp_executable))
     except subprocess.CalledProcessError as e:
-        halt("Error: {} from CCL".format(e))
+        halt("Error: {} from CCL64".format(e))
 
     #print("ccl version string = {}".format(ccl_version_string))
 
@@ -217,12 +217,12 @@ elif config.lisp_implementation == "ccl":
     import re
     m = re.match(r".*([0-9]+\.[0-9]+)", ccl_version_string)
     if not m:
-        halt("Error: issue with ccl version string (please report)")
+        halt("Error: issue with ccl64 version string (please report)")
 
     config.ccl_version = tuple([int(d) for d in m.group(1).split(".")])
     #print("ccl version = {}".format(config.ccl_version))
-    if config.ccl_version[0] < 1 or config.ccl_version[1] < 10:
-        halt("Error: require CCL v1.10 or above")
+    if config.ccl_version[0] < 2 or config.ccl_version[1] < 0:
+        halt("Error: require CCL v2.0 or above")
 
     print("... Kernel: using {}".format(ccl_version_string))
 
@@ -253,7 +253,7 @@ if config.lisp_implementation == "sbcl":
         "display_name": "SBCL Lisp",
         "language": "lisp"
     }
-elif config.lisp_implementation == "ccl":
+elif config.lisp_implementation == "ccl64":
     KERNEL_SPEC = {
         "argv": [
             config.lisp_executable,'--batch', '--load',
@@ -261,7 +261,7 @@ elif config.lisp_implementation == "ccl":
             "{0}/src".format(config.cl_jupyter_startup_def_dir),
             config.cl_jupyter_startup_def_dir,
             '{connection_file}'],
-        "display_name": "CCL Lisp",
+        "display_name": "CCL64 Lisp",
         "language": "lisp"
     }
 else:
