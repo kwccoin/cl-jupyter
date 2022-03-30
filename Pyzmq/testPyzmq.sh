@@ -1,2 +1,3 @@
-python3 testPyzmqServer.py &
-python3 testPyzmqClient.py 
+conda activate myenv
+python testPyzmqServer.py 
+# python testPyzmqClient.py 
